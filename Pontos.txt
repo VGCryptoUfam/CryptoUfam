@@ -1,0 +1,86 @@
+    private int x;
+    private int y;
+    private int p;
+    private int A;
+    //private int B;
+
+    public void set (int x, int y, int p, int A){
+        this.x = x;
+        this.y = y;
+        this.p = p;
+        this.A = A;
+    }
+
+    public boolean teste_igualdade(Pontos ponto){
+        return ( (ponto.get_x()==x) && (ponto.get_y()==y) );
+    }
+
+    public String read(){return "("+x+","+y+")";}
+
+    private int get_x (){return x;}
+    private int get_y (){return y;}
+
+    private void soma_igual(){
+        int num = (3*x*x+A);
+        int den = (2*y);
+        int m = ((num%p * mult_inv(den))%p);
+        int nx, ny;
+        nx = (m*m-2*x)%p;
+        ny =-((y + m*(nx - x))%p);
+        if (nx<0) nx = nx + p;
+        if (ny<0) ny = ny + p;
+        x = nx;
+        y= ny;
+    }
+
+    private void soma_dif(Pontos ponto){
+        int num = y - ponto.get_y();
+        int den = x - ponto.get_x();
+        int m  = num * mult_inv(den);
+        int nx =  (m*m-x-ponto.get_x())%p;
+        int ny = -((y + m*(nx - x))%p);
+        if (nx<0) nx = nx + p;
+        if (ny<0) ny = ny + p;
+        x = nx;
+        y = ny;
+    }
+
+    public void soma(Pontos ponto){
+        if( (x == 0 && y == 0)&&(ponto.get_x()!=0 && ponto.get_y() != 0) ){
+            x = ponto.get_x();
+            y = ponto.get_y();
+        } else if( (x != 0 && y != 0)&&(ponto.get_x()==0 && ponto.get_y() == 0) ){
+            /*
+             *nao acontece nada
+             */
+        } else if (teste_igualdade(ponto)){
+            soma_igual();
+        } else if ((x == ponto.get_x())||(y == ponto.get_y())){
+            x = 0;
+            y = 0;
+        } else{
+            soma_dif(ponto);
+        }
+    }
+
+    private int mult_inv(int num){
+        if (num > 0){
+            return mult_inv_pos(num);
+        }
+        else if ( num < 0){
+            return mult_inv_neg(num);
+        }
+        else return 0;
+    }
+
+    private int mult_inv_pos(int num){
+        int i = 0;
+        while((i*num)%p != 1) {i++;}
+        return i;
+    }
+
+    private int mult_inv_neg(int num){
+        int i = 0;
+        while((i-num)%p != 0) {i++;}
+        return mult_inv_pos(i);
+    }

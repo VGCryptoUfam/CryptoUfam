@@ -1,0 +1,107 @@
+    EditText text1;
+    EditText text2;
+    EditText text3;
+    int p; int A; int B;
+    ListView list;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        text1 = (EditText)findViewById(R.id.editText);
+        text2 = (EditText)findViewById(R.id.editText2);
+        text3 = (EditText)findViewById(R.id.editText3);
+
+        list = (ListView)findViewById(R.id.Lista);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pontos_pertencentes();
+            }
+        });
+    }
+
+    private int funcao(int x){ return x*x*x+A*x+B; }
+
+
+    private void pontos_pertencentes(){
+        final ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        adap.clear();
+        list.setAdapter(adap);
+        int contador = 0;
+        p = Integer.parseInt(text1.getText().toString());
+        A = Integer.parseInt(text2.getText().toString());
+        B = Integer.parseInt(text3.getText().toString());
+        for (int i = 0; i < p; i++) {
+            int restoX = funcao(i)%p;
+            for (int j = 0; j < p; j++){
+                int restoY = (j*j)%p;
+                if (restoX == restoY){
+                    adap.add("("+i+","+j+")");
+                    contador++;
+                }
+            }
+        }
+        list.setAdapter(adap);
+        Toast.makeText(this,contador + " pontos encontrados.", Toast.LENGTH_LONG).show();
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String ponto_inicial = (list.getAdapter().getItem(position)).toString();
+                int v = ponto_inicial.indexOf(",");
+
+                // Valor de X do ponto inicial
+                String x_inicial = ponto_inicial.substring(1,v);
+                // Valor de Y do ponto inicial
+                String y_inicial = ponto_inicial.substring(v+1,ponto_inicial.length()-1);
+                String coef_A = String.valueOf(A); // Valor de entrada A
+                String coef_B = String.valueOf(B); // Valor de entrada B
+                String coef_p = String.valueOf(p); // Valor de entrada p
+
+                Intent it = new Intent(MainActivity.this, Main2Activity.class);
+                it.putExtra("var_x",x_inicial);
+                it.putExtra("var_y",y_inicial);
+                it.putExtra("coef_A",coef_A);
+                it.putExtra("coef_B",coef_B);
+                it.putExtra("coef_p",coef_p);
+                startActivity(it);
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+
+
+
+
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }

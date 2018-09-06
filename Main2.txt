@@ -1,0 +1,44 @@
+
+    ListView list2;
+    TextView text;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main2);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
+        text = (TextView)findViewById(R.id.Quest);
+        list2 = (ListView)findViewById(R.id.Lista2);
+
+
+        final Pontos ponto_dinamico, ponto_estatico;
+        ponto_dinamico = new Pontos();
+        ponto_estatico = new Pontos();
+
+        int x_inicial   = Integer.parseInt((getIntent()).getStringExtra("var_x"));
+        int y_inicial   = Integer.parseInt((getIntent()).getStringExtra("var_y"));
+        int A           = Integer.parseInt((getIntent()).getStringExtra("coef_A"));
+        int B           = Integer.parseInt((getIntent()).getStringExtra("coef_B"));
+        int p           = Integer.parseInt((getIntent()).getStringExtra("coef_p"));
+
+        ponto_dinamico.set(x_inicial,y_inicial,p,A);
+        ponto_estatico.set(x_inicial,y_inicial,p,A);
+
+        text.setText("y² = x³ + "+A+"x + "+B);
+
+        final ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        list2.setAdapter(adap);
+        adap.clear();
+        adap.add(ponto_dinamico.read());
+        int i = 0;
+        do{
+            i++;
+            ponto_dinamico.soma(ponto_estatico);
+            adap.add(ponto_dinamico.read());
+            if (ponto_estatico.teste_igualdade(ponto_dinamico)|| i > 50 ) break;
+        }while (true);
+    }
+
